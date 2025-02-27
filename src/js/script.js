@@ -1,4 +1,4 @@
-// Estrategia de Blackjack
+// Estrategia de Blackjack (misma que en ambos scripts)
 const estrategia = {
     duros: {
         4: { '2': 'P', '3': 'P', '4': 'P', '5': 'P', '6': 'P', '7': 'P', '8': 'P', '9': 'P', '10': 'P', 'A': 'P' },
@@ -48,7 +48,7 @@ const estrategia = {
 let playerSelectedCards = [];
 let dealerSelectedCard = null;
 
-// Función para crear botones de cartas
+// Crear botones de cartas
 function createCardButtons(containerId, start, end, callback) {
     const container = document.getElementById(containerId);
     for (let i = start; i <= end; i++) {
@@ -65,7 +65,7 @@ function createCardButtons(containerId, start, end, callback) {
     container.appendChild(aceBtn);
 }
 
-// Funciones para determinar el tipo de mano
+// Determinar el tipo de mano
 function determinarTipoMano(mano) {
     if (mano.length === 2 && mano[0] === mano[1]) return 'pares';
     if (mano.includes(1)) {
@@ -75,17 +75,34 @@ function determinarTipoMano(mano) {
     return 'duros';
 }
 
+// Obtener el valor blando (inspirado en Python)
+function obtenerValorBlando(mano) {
+    const sortedMano = [...mano].sort((a, b) => a - b);
+    const ases = sortedMano.filter(c => c === 1);
+    const otrasCartas = sortedMano.filter(c => c !== 1);
+    if (ases.length === 1 && otrasCartas.length > 0) {
+        return `A,${otrasCartas[0]}`;
+    }
+    return null;
+}
+
 // Obtener la acción recomendada
 function obtenerAccion(jugador, crupier) {
     const tipoMano = determinarTipoMano(jugador);
+    const crupierStr = crupier === 1 ? 'A' : crupier.toString();
+
     if (tipoMano === 'duros') {
         const total = jugador.reduce((a, b) => a + b, 0);
-        return estrategia.duros[total]?.[crupier.toString()] || 'P';
+        return estrategia.duros[total]?.[crupierStr] || 'P';
     } else if (tipoMano === 'blandos') {
-        const valorBlando = `A,${jugador.find(c => c !== 1)}`;
-        return estrategia.blandos[valorBlando]?.[crupier.toString()] || 'P';
+        const valorBlando = obtenerValorBlando(jugador);
+        if (valorBlando && estrategia.blandos[valorBlando]) {
+            return estrategia.blandos[valorBlando][crupierStr] || 'P';
+        }
+        return 'P'; // Acción por defecto si no se encuentra
     } else {
-        return estrategia.pares[jugador.join(',')]?.[crupier.toString()] || 'P';
+        const par = jugador.join(',');
+        return estrategia.pares[par]?.[crupierStr] || 'P';
     }
 }
 
@@ -94,6 +111,8 @@ function handlePlayerCardSelection(card) {
     if (playerSelectedCards.length < 2) {
         playerSelectedCards.push(card);
         updateSelectedCards();
+    } else {
+        alert('Solo se permiten dos cartas para el jugador.');
     }
 }
 
@@ -103,8 +122,8 @@ function handleDealerCardSelection(card) {
 }
 
 function updateSelectedCards() {
-    document.getElementById('selectedPlayerCards').textContent = `Cartas seleccionadas: ${playerSelectedCards.join(', ')}`;
-    document.getElementById('selectedDealerCard').textContent = `Carta seleccionada: ${dealerSelectedCard || ''}`;
+    document.getElementById('selectedPlayerCards').textContent = `Cartas seleccionadas: ${playerSelectedCards.map(c => c === 1 ? 'A' : c).join(', ')}`;
+    document.getElementById('selectedDealerCard').textContent = `Carta seleccionada: ${dealerSelectedCard ? (dealerSelectedCard === 1 ? 'A' : dealerSelectedCard) : ''}`;
 }
 
 function clearPlayerCards() {
@@ -120,7 +139,7 @@ function clearDealerCard() {
 // Mostrar recomendación
 function showRecommendation() {
     if (playerSelectedCards.length !== 2 || !dealerSelectedCard) {
-        document.getElementById('result').textContent = 'Selecciona las cartas primero';
+        document.getElementById('result').textContent = 'Selecciona exactamente dos cartas para el jugador y una para el crupier.';
         return;
     }
     const accion = obtenerAccion(playerSelectedCards, dealerSelectedCard);
