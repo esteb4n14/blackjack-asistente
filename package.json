@@ -4,9 +4,13 @@
   "description": "Aplicación web que recomienda estrategias óptimas de Blackjack (\"Pedir\", \"Quedarse\", etc.) según las cartas del jugador y del crupier. Usa HTML5, CSS3 (con BEM y Grid) y JavaScript para una interfaz interactiva y dinámica.",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "live-server --port=8080"
   },
   "keywords": [],
   "author": "esteb4n14",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
 }
