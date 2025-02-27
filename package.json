@@ -1,0 +1,12 @@
+{
+  "name": "blackjack-asistente",
+  "version": "1.0.0",
+  "description": "Aplicación web que recomienda estrategias óptimas de Blackjack (\"Pedir\", \"Quedarse\", etc.) según las cartas del jugador y del crupier. Usa HTML5, CSS3 (con BEM y Grid) y JavaScript para una interfaz interactiva y dinámica.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "esteb4n14",
+  "license": "MIT"
+}
